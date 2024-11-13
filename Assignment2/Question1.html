@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Form with jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .error { color: red; }
+        /* div{
+            text-align: center;
+        } */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .div1 {
+            background-color: burlywood;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+            
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="div1">
+        <h2>Validation Form</h2>
+        <form id="myForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter Your Name" required>
+            <span class="error" id="nameError"></span>
+            <br><br>
+    
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter Email ID" required>
+            <span class="error" id="emailError"></span>
+            <br><br>
+    
+            <button type="submit" id="submitBtn">Submit</button>
+        </form>
+    </div>
+    
+
+    <script>
+        $(document).ready(function() {
+            $('#submitBtn').click(function(event) {
+                event.preventDefault();  // Prevent the form from submitting
+
+                let name = $('#name').val().trim();
+                let email = $('#email').val().trim();
+                let valid = true;
+
+                // Clear previous error messages
+                $('#nameError').text('');
+                $('#emailError').text('');
+
+                // Validate name
+                if (name === '') {
+                    $('#nameError').text('Name is required.');
+                    valid = false;
+                }
+
+                // Validate email
+                if (email === '') {
+                    $('#emailError').text('Email is required.');
+                    valid = false;
+                } else if (!validateEmail(email)) {
+                    $('#emailError').text('Enter a valid email.');
+                    valid = false;
+                }
+
+                // If valid, show alert with form data
+                if (valid) {
+                    alert('Name: ' + name + '\nEmail: ' + email);
+                }
+            });
+
+            // Email validation function
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(String(email).toLowerCase());
+            }
+        });
+    </script>
+</body>
+</html>

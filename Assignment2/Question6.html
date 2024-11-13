@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book List</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color:darkgrey;
+            margin: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .book {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        .book img {
+            width: 100px;
+            height: auto;
+            margin-right: 20px;
+        }
+        .book-info {
+            flex-grow: 1;
+        }
+        .book-info h3 {
+            margin: 0;
+            font-size: 1.2em;
+            color: #444;
+        }
+        .book-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .loading {
+            text-align: center;
+            color: #333;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Books List</h1>
+        <div id="bookList" class="loading">Loading books...</div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Function to fetch books data
+            function fetchBooks() {
+                $.ajax({
+                    url: "https://openlibrary.org/subjects/programming.json?published_in=2000-2020",
+                    method: "GET",
+                    success: function(data) {
+                        displayBooks(data.works); // Call function to display books
+                    },
+                    error: function() {
+                        $("#bookList").html("An error occurred while retrieving the book list.");
+                    }
+                });
+            }
+
+            // Function to display books data
+            function displayBooks(books) {
+                if (books.length === 0) {
+                    $("#bookList").html("No books found.");
+                    return;
+                }
+
+                let bookHTML = "";
+                books.forEach(function(book) {
+                    let coverImage = book.cover_id 
+                        ? `https://covers.openlibrary.org/b/id/${book.cover_id}-L.jpg` 
+                        : "https://via.placeholder.com/100";
+                    
+                    bookHTML += `
+                        <div class="book">
+                            <img src="${coverImage}" alt="Book Cover">
+                            <div class="book-info">
+                                <h3>${book.title}</h3>
+                                <p>Author: ${book.authors ? book.authors.map(a => a.name).join(", ") : "Unknown"}</p>
+                                <p>First Published: ${book.first_publish_year || "Unknown"}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                $("#bookList").html(bookHTML); // Inject the HTML into the DOM
+            }
+
+            // Fetch books on page load
+            fetchBooks();
+        });
+    </script>
+</body>
+</html>

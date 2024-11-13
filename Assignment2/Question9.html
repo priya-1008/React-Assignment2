@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load More Button Example</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .book {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .book h3 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+        #loadMore {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #loadMore:hover {
+            background-color: #0056b3;
+        }
+        #loading {
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Books List</h2>
+    <div id="bookList">
+        <!-- Books will be appended here -->
+    </div>
+    <button id="loadMore">Load More</button>
+    <div id="loading">Loading...</div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        let page = 1; // Initialize the page number
+        let loading = false; // Prevent multiple requests
+
+        // Function to fetch books data
+        function fetchBooks(page) {
+            if (loading) return; // Prevent multiple requests while loading
+
+            loading = true;
+            $('#loading').show();
+
+            $.ajax({
+                url: `https://openlibrary.org/subjects/programming.json?limit=5&page=${page}`,
+                method: 'GET',
+                success: function(data) {
+                    let books = data.works;
+                    if (books.length > 0) {
+                        appendBooks(books);
+                    } else {
+                        $('#loadMore').text('No more books').attr('disabled', true);
+                    }
+                    $('#loading').hide();
+                    loading = false;
+                },
+                error: function() {
+                    $('#loading').hide();
+                    alert('An error occurred while fetching data.');
+                    loading = false;
+                }
+            });
+        }
+
+        // Function to append books to the list
+        function appendBooks(books) {
+            books.forEach(function(book) {
+                let bookItem = `
+                    <div class="book">
+                        <h3>${book.title}</h3>
+                        <p>By ${book.authors ? book.authors.map(a => a.name).join(", ") : "Unknown"}</p>
+                    </div>
+                `;
+                $('#bookList').append(bookItem);
+            });
+        }
+
+        // Initial load of first page
+        fetchBooks(page);
+
+        // Load more content on button click
+        $('#loadMore').on('click', function() {
+            page++; // Increment the page number
+            fetchBooks(page); // Fetch the next page of data
+        });
+    });
+</script>
+
+</body>
+</html>

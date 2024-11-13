@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic State and City Dropdown</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .div1 {
+            background-color:cadetblue;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+            
+        }
+    </style>
+</head>
+<body>
+    <div class="div1">
+        <h2>Select State and City</h2>
+
+        <form>
+            <label for="state">Select State:</label>
+            <select id="state">
+                <option value="">--Select State--</option>
+                <option value="California">California</option>
+                <option value="Texas">Texas</option>
+                <option value="Florida">Florida</option>
+            </select>
+    
+            <br><br>
+    
+            <label for="city">Select City:</label>
+            <select id="city">
+                <option value="">--Select City--</option>
+            </select>
+        </form>
+    </div>
+    
+
+    <script>
+        $(document).ready(function() {
+            // Data for cities based on states
+            const stateCityMap = {
+                'California': ['Los Angeles', 'San Francisco', 'San Diego'],
+                'Texas': ['Houston', 'Austin', 'Dallas'],
+                'Florida': ['Miami', 'Orlando', 'Tampa']
+            };
+
+            // When state dropdown changes
+            $('#state').change(function() {
+                let state = $(this).val(); // Get selected state
+                let cities = stateCityMap[state] || []; // Get cities for selected state
+                let cityDropdown = $('#city');
+
+                // Clear the city dropdown
+                cityDropdown.empty();
+
+                // Add default option
+                cityDropdown.append('<option value="">--Select City--</option>');
+
+                // Add cities to the dropdown
+                cities.forEach(function(city) {
+                    cityDropdown.append('<option value="' + city + '">' + city + '</option>');
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
